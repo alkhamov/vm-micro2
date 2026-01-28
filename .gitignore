@@ -1,0 +1,17 @@
+# Terraform
+**/.terraform/
+**/terraform.tfstate*
+**/.terraform.lock.hcl
+
+# Docker
+**/*.log
+
+# OS / IDE
+.DS_Store
+.idea/
+.vscode/
+
+# Secrets
+.env
+*.key
+*.pem

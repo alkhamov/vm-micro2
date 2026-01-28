@@ -1,1 +1,22 @@
+version: "3.8"
 
+services:
+  camunda:
+    image: camunda/camunda-bpm-platform:run-latest
+    container_name: camunda
+    ports:
+      - "8080:8080"
+    networks:
+      - camunda-net
+
+  deployer:
+    build: ./deployer
+    container_name: camunda-deployer
+    depends_on:
+      - camunda
+    networks:
+      - camunda-net
+    restart: "no"
+
+networks:
+  camunda-net:

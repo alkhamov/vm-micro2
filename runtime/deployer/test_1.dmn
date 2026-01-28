@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:camunda="http://camunda.org/schema/1.0/dmn" id="Definitions_13bx1lf" name="DRD" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="5.4.2" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.18.0">
+  <decision id="Decision_0mezfzw" name="Define_UseCase" camunda:historyTimeToLive="90">
+    <decisionTable id="DecisionTable_1qk9uvg">
+      <input id="Input_1" label="name">
+        <inputExpression typeRef="string">
+          <text>name</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_1doh55b" label="action">
+        <inputExpression typeRef="string">
+          <text>action</text>
+        </inputExpression>
+      </input>
+      <output id="Output_1" label="useCase" name="useCase" typeRef="string" />
+      <rule id="DecisionRule_0u8ezzw">
+        <inputEntry id="UnaryTests_1w4691i">
+          <text>subscriber1</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_16hxqx3">
+          <text>add</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1ik163w">
+          <text>activate</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1pfksxm">
+        <inputEntry id="UnaryTests_10ej5ri">
+          <text>subscription</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_04861ao">
+          <text>delete</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1bdfstj">
+          <text>terminate</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1rzk838">
+        <inputEntry id="UnaryTests_0s4exay">
+          <text>subscriber2</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_08h4ryo">
+          <text>add</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0f3yo0c">
+          <text>activate</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="Decision_0mezfzw">
+        <dc:Bounds height="80" width="180" x="160" y="100" />
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>

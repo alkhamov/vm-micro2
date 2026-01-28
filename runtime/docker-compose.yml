@@ -8,6 +8,8 @@ services:
       - "8080:8080"
     networks:
       - camunda-net
+    volumes:
+      - ./application.yaml:/camunda/conf/application.yaml
 
   deployer:
     build: ./deployer

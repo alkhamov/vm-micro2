@@ -11,3 +11,12 @@ logs:
 down:
 	docker compose down
 
+clean:
+	docker compose down -v --rmi local
+
+nuke:
+	docker compose down -v
+	docker volume prune -f
+	docker image prune -f
+
+

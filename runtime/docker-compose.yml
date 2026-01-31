@@ -16,14 +16,15 @@ services:
       timeout: 3s
       retries: 20
 
-  deployer:
-    build: ./deployer
-    container_name: camunda-deployer
-    depends_on:
-      - camunda
-    networks:
-      - camunda-net
-    restart: "no"
+    deployer:
+      build: ./deployer
+      depends_on:
+        camunda:
+          condition: service_healthy
+      networks:
+        - camunda-net
+      restart: "no"
+
 
 networks:
   camunda-net:

@@ -15,7 +15,7 @@ echo "✅ Camunda ready, deploying BPMN/DMN..."
 curl -X POST "$CAMUNDA_URL/deployment/create" \
   -F "deployment-name=custom-processes" \
   -F "deployment-source=docker" \
-  -F "data=@bpmn/DMN_Test_1.bpmn" \
+  -F "data=@bpmn/test_2.bpmn" \
   -F "data=@dmn/test_1.dmn"
 
 echo "🚀 Deployment finished!"

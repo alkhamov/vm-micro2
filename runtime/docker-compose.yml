@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   camunda:
     image: camunda/camunda-bpm-platform:run-latest
@@ -8,23 +6,20 @@ services:
       - "8080:8080"
     networks:
       - camunda-net
-    volumes:
-      - ./application.yaml:/camunda/conf/application.yaml
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/engine-rest/engine"]
+      test: ["CMD", "curl", "-f", "http://localhost:8080/engine-rest/engine || exit 1"]
       interval: 5s
-      timeout: 3s
+      timeout: 5s
       retries: 40
 
   deployer:
     build: ./deployer
+    container_name: camunda-deployer
     depends_on:
-      camunda:
-        condition: service_healthy
+      - camunda
     networks:
       - camunda-net
     restart: "no"
-
 
 networks:
   camunda-net:

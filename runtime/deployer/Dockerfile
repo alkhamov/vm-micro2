@@ -7,4 +7,3 @@ COPY dmn ./dmn
 COPY --chmod=755 deploy.sh .
 
 CMD ["./deploy.sh"]
-

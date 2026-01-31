@@ -4,8 +4,7 @@ WORKDIR /deploy
 
 COPY bpmn ./bpmn
 COPY dmn ./dmn
-COPY deploy.sh .
-
-RUN chmod +x deploy.sh
+COPY --chmod=755 deploy.sh .
 
 CMD ["./deploy.sh"]
+

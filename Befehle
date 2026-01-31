@@ -2,6 +2,8 @@ git clone https://github.com/alkhamov/vm-micro2.git
 
 docker compose down -v --rmi all
 docker volume prune -f
+git pull origin main
+
 docker compose up -d camunda
 docker compose up deployer
 

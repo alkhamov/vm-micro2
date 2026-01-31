@@ -10,6 +10,11 @@ services:
       - camunda-net
     volumes:
       - ./application.yaml:/camunda/conf/application.yaml
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/engine-rest/engine"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
 
   deployer:
     build: ./deployer

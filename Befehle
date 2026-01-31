@@ -1,5 +1,10 @@
 git clone https://github.com/alkhamov/vm-micro2.git
 
+docker compose down -v --rmi all
+docker volume prune -f
+docker compose up -d camunda
+docker compose up deployer
+
 terraform init
 
 terraform plan \

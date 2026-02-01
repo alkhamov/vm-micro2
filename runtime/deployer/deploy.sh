@@ -1,5 +1,5 @@
 #!/bin/sh
-set -e
+set -ex
 
 CAMUNDA_URL=http://camunda:8080/engine-rest
 

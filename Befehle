@@ -1,3 +1,7 @@
+net
+docker network create camunda-net
+
+
 SQL
 
 docker exec -it demo-postgres psql -U demo_user -d demo

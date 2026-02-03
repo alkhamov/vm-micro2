@@ -1,3 +1,8 @@
+SQL
+
+docker exec -it demo-postgres psql -U demo_user -d demo
+
+
 git clone https://github.com/alkhamov/vm-micro2.git
 
 docker compose down -v --rmi all

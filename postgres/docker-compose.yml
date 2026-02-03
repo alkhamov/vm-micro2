@@ -12,3 +12,10 @@ services:
     volumes:
       - ./data:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+    networks:
+      - camunda-net
+
+networks:
+  camunda-net:
+    external: true

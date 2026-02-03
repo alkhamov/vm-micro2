@@ -5,7 +5,7 @@
       <bpmn:outgoing>Flow_126vmba</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="Flow_126vmba" sourceRef="StartEvent_1" targetRef="Activity_0re6zgx" />
-    <bpmn:serviceTask id="Activity_0re6zgx" name="Get Name and action from DB" camunda:type="external" camunda:topic="demo-topic">
+    <bpmn:serviceTask id="Activity_0re6zgx" name="Get Name and action from DB" camunda:type="external" camunda:topic="read-db">
       <bpmn:incoming>Flow_126vmba</bpmn:incoming>
       <bpmn:outgoing>Flow_13osg57</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -20,7 +20,7 @@
       <bpmn:incoming>Flow_1ews1er</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_1ews1er" sourceRef="Activity_1m24vx0" targetRef="Event_1q03kpz" />
-    <bpmn:serviceTask id="Activity_1m24vx0" name="Set useCase to DB" camunda:type="external" camunda:topic="demo-topic">
+    <bpmn:serviceTask id="Activity_1m24vx0" name="Set useCase to DB" camunda:type="external" camunda:topic="write-db">
       <bpmn:incoming>Flow_1n7hsv8</bpmn:incoming>
       <bpmn:outgoing>Flow_1ews1er</bpmn:outgoing>
     </bpmn:serviceTask>

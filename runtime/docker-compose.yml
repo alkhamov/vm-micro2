@@ -9,7 +9,7 @@ services:
     networks:
       - camunda-net
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/engine-rest/engine/default"]
+      test: ["CMD", "curl", "-f", "http://localhost:8080/engine-rest/version"]
       interval: 5s
       timeout: 5s
       retries: 40

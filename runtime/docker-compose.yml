@@ -14,6 +14,15 @@ services:
       timeout: 5s
       retries: 40
 
+  read-db-worker:
+    build: ./workers/read-db
+    container_name: read-db-worker
+    depends_on:
+      camunda:
+        condition: service_healthy
+    networks:
+      - camunda-net
+
   deployer:
     build: ./deployer
     container_name: camunda-deployer

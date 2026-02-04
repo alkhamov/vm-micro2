@@ -32,8 +32,6 @@ services:
     networks:
       - camunda-net
 
-  
-
   deployer:
     build: ./deployer
     container_name: camunda-deployer

@@ -23,6 +23,17 @@ services:
     networks:
       - camunda-net
 
+  write-db-worker:
+    build: ./workers/write-db
+    container_name: write-db-worker
+    depends_on:
+      camunda:
+        condition: service_healthy
+    networks:
+      - camunda-net
+
+  
+
   deployer:
     build: ./deployer
     container_name: camunda-deployer

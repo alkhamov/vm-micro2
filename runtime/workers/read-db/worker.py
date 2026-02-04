@@ -15,6 +15,8 @@ DB_CONFIG = {
     "password": "demo_pass"
 }
 
+# -------- Camunda API --------
+
 def fetch_and_lock():
     url = f"{CAMUNDA_URL}/external-task/fetchAndLock"
     payload = {
@@ -39,22 +41,29 @@ def complete_task(task_id, variables):
     r = requests.post(url, json=payload)
     r.raise_for_status()
 
-def read_from_db():
+# -------- DB Logic --------
+
+def read_from_db(request_id: int):
     conn = psycopg2.connect(**DB_CONFIG)
     cur = conn.cursor(cursor_factory=RealDictCursor)
 
-    cur.execute("""
+    cur.execute(
+        """
         SELECT name, action
-        FROM demo_table
-        ORDER BY id DESC
-        LIMIT 1
-    """)
+        FROM requests
+        WHERE id = %s
+        """,
+        (request_id,)
+    )
 
     row = cur.fetchone()
+
     cur.close()
     conn.close()
 
     return row
+
+# -------- Main Loop --------
 
 def main():
     print("🚀 read-db worker started")
@@ -68,18 +77,29 @@ def main():
 
         for task in tasks:
             task_id = task["id"]
+            variables = task.get("variables", {})
+
             print(f"📥 Processing task {task_id}")
 
-            data = read_from_db()
-            if not data:
-                data = {"name": None, "action": None}
+            # 1️⃣ requestId aus Prozess lesen
+            if "requestId" not in variables:
+                raise Exception("requestId is missing in process variables")
 
-            variables = {
+            request_id = variables["requestId"]["value"]
+
+            # 2️⃣ DB lesen
+            data = read_from_db(request_id)
+
+            if data is None:
+                raise Exception(f"No DB record found for requestId={request_id}")
+
+            # 3️⃣ Variablen an Camunda zurückgeben
+            result_variables = {
                 "name": {"value": data["name"], "type": "String"},
                 "action": {"value": data["action"], "type": "String"}
             }
 
-            complete_task(task_id, variables)
+            complete_task(task_id, result_variables)
             print(f"✅ Task {task_id} completed")
 
 if __name__ == "__main__":

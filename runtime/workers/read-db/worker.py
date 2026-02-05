@@ -25,7 +25,7 @@ def fetch_and_lock():
         "usePriority": True,
         "topics": [{
             "topicName": TOPIC,
-            "lockDuration": 10000
+            "lockDuration": 60000
         }]
     }
     r = requests.post(url, json=payload)

@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1y79e11" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.25.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.19.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1y79e11" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.43.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.19.0">
   <bpmn:process id="Process_0mme0r6" name="Test Process" isExecutable="true" camunda:versionTag="1.2.3" camunda:historyTimeToLive="30">
     <bpmn:startEvent id="StartEvent_1">
-      <bpmn:outgoing>Flow_126vmba</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0xjp8wp</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:sequenceFlow id="Flow_126vmba" sourceRef="StartEvent_1" targetRef="Activity_0re6zgx" />
     <bpmn:serviceTask id="Activity_0re6zgx" name="Get Name and action from DB" camunda:type="external" camunda:topic="read-db">
-      <bpmn:incoming>Flow_126vmba</bpmn:incoming>
+      <bpmn:incoming>Flow_06qjt2p</bpmn:incoming>
       <bpmn:outgoing>Flow_13osg57</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_13osg57" sourceRef="Activity_0re6zgx" targetRef="Activity_0a9ithu" />
-    <bpmn:businessRuleTask id="Activity_0a9ithu" name="Define useCase" camunda:decisionRef="Decision_0mezfzw" camunda:resultVariable="useCaseResult"
-  camunda:mapDecisionResult="singleResult" camunda:decisionRefBinding="latest">
+    <bpmn:businessRuleTask id="Activity_0a9ithu" name="Define useCase" camunda:resultVariable="useCaseResult" camunda:decisionRef="Decision_0mezfzw" camunda:mapDecisionResult="singleResult">
       <bpmn:incoming>Flow_13osg57</bpmn:incoming>
       <bpmn:outgoing>Flow_1n7hsv8</bpmn:outgoing>
     </bpmn:businessRuleTask>
@@ -24,40 +22,61 @@
       <bpmn:incoming>Flow_1n7hsv8</bpmn:incoming>
       <bpmn:outgoing>Flow_1ews1er</bpmn:outgoing>
     </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0xjp8wp" sourceRef="StartEvent_1" targetRef="Activity_enter_request_id" />
+    <bpmn:sequenceFlow id="Flow_06qjt2p" sourceRef="Activity_enter_request_id" targetRef="Activity_0re6zgx" />
+    <bpmn:userTask id="Activity_enter_request_id" name="Enter Request ID">
+      <bpmn:extensionElements>
+       <camunda:formData>
+        <camunda:formField
+          id="requestId"
+          label="Request ID"
+          type="long"
+          required="true" />
+       </camunda:formData>
+      </bpmn:extensionElements>
+    </bpmn:userTask>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_0mme0r6">
+      <bpmndi:BPMNShape id="Activity_004c5l0_di" bpmnElement="Activity_1m24vx0">
+        <dc:Bounds x="710" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
-        <dc:Bounds x="179" y="99" width="36" height="36" />
+        <dc:Bounds x="152" y="99" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0sazyq9_di" bpmnElement="Activity_0re6zgx">
-        <dc:Bounds x="290" y="77" width="100" height="80" />
+        <dc:Bounds x="380" y="77" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1xxgl5g_di" bpmnElement="Activity_0a9ithu">
-        <dc:Bounds x="470" y="77" width="100" height="80" />
+        <dc:Bounds x="550" y="77" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1q03kpz_di" bpmnElement="Event_1q03kpz">
-        <dc:Bounds x="832" y="99" width="36" height="36" />
+        <dc:Bounds x="852" y="99" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_004c5l0_di" bpmnElement="Activity_1m24vx0">
-        <dc:Bounds x="650" y="77" width="100" height="80" />
+      <bpmndi:BPMNShape id="Activity_1ue8jaq_di" bpmnElement="Activity_enter_request_id">
+        <dc:Bounds x="220" y="77" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_126vmba_di" bpmnElement="Flow_126vmba">
-        <di:waypoint x="215" y="117" />
-        <di:waypoint x="290" y="117" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_13osg57_di" bpmnElement="Flow_13osg57">
-        <di:waypoint x="390" y="117" />
-        <di:waypoint x="470" y="117" />
+        <di:waypoint x="480" y="117" />
+        <di:waypoint x="550" y="117" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1n7hsv8_di" bpmnElement="Flow_1n7hsv8">
-        <di:waypoint x="570" y="117" />
         <di:waypoint x="650" y="117" />
+        <di:waypoint x="710" y="117" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1ews1er_di" bpmnElement="Flow_1ews1er">
-        <di:waypoint x="750" y="117" />
-        <di:waypoint x="832" y="117" />
+        <di:waypoint x="810" y="117" />
+        <di:waypoint x="852" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0xjp8wp_di" bpmnElement="Flow_0xjp8wp">
+        <di:waypoint x="188" y="117" />
+        <di:waypoint x="220" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_06qjt2p_di" bpmnElement="Flow_06qjt2p">
+        <di:waypoint x="320" y="117" />
+        <di:waypoint x="380" y="117" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

@@ -74,20 +74,16 @@ def update_use_case(request_id: int, use_case: str):
 
 def extract_use_case(variables: dict) -> str | None:
     """
-    Supports:
-    A) useCaseResult.value == "activate"
-    B) useCaseResult.value == {"useCase": "activate"}
+    Expected (after BPMN change to resultVariable=useCase + singleEntry):
+      useCase.value == "activate"
     """
-    if "useCaseResult" not in variables:
+    v = variables.get("useCase")
+    if not v:
         return None
 
-    use_case_value = variables.get("useCaseResult", {}).get("value")
-
-    if isinstance(use_case_value, str):
-        return use_case_value
-
-    if isinstance(use_case_value, dict):
-        return use_case_value.get("useCase")
+    value = v.get("value")
+    if isinstance(value, str) and value.strip():
+        return value
 
     return None
 
@@ -124,7 +120,7 @@ def main():
                 # useCase aus DMN Ergebnis holen (robust)
                 use_case = extract_use_case(variables)
                 if not use_case:
-                    raise Exception(f"useCaseResult missing/invalid: {variables.get('useCaseResult')}")
+                    raise Exception(f"useCase missing/invalid: {variables.get('useCase')}")
 
                 # DB update
                 update_use_case(int(request_id), use_case)

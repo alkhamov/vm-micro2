@@ -9,7 +9,7 @@
       <bpmn:outgoing>Flow_13osg57</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_13osg57" sourceRef="Activity_0re6zgx" targetRef="Activity_0a9ithu" />
-    <bpmn:businessRuleTask id="Activity_0a9ithu" name="Define useCase" camunda:resultVariable="useCaseResult" camunda:decisionRef="Decision_0mezfzw" camunda:mapDecisionResult="singleResult">
+    <bpmn:businessRuleTask id="Activity_0a9ithu" name="Define useCase" camunda:decisionRef="Decision_0mezfzw" camunda:mapDecisionResult="singleEntry" camunda:resultVariable="useCase" camunda:decisionRefBinding="latest">
       <bpmn:incoming>Flow_13osg57</bpmn:incoming>
       <bpmn:outgoing>Flow_1n7hsv8</bpmn:outgoing>
     </bpmn:businessRuleTask>

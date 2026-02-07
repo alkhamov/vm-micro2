@@ -29,22 +29,23 @@
 
       <output id="Output_1" label="useCase" name="useCase" typeRef="string" />
 
-      <rule id="DecisionRule_0u8ezzw">
-        <inputEntry id="UnaryTests_1w4691i"><text>"subscriber1"</text></inputEntry>
-        <inputEntry id="UnaryTests_16hxqx3"><text>"add"</text></inputEntry>
-        <outputEntry id="LiteralExpression_1ik163w"><text>"activate"</text></outputEntry>
+      <!-- Kombinierte Regel: subscriber1 OR subscriber2 + add => activate -->
+      <rule id="DecisionRule_activate_add_subscribers">
+        <inputEntry id="UnaryTests_name_in_subscribers">
+          <text>name in ["subscriber1","subscriber2"]</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_action_add">
+          <text>"add"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_activate">
+          <text>"activate"</text>
+        </outputEntry>
       </rule>
 
       <rule id="DecisionRule_1pfksxm">
         <inputEntry id="UnaryTests_10ej5ri"><text>"subscription"</text></inputEntry>
         <inputEntry id="UnaryTests_04861ao"><text>"delete"</text></inputEntry>
         <outputEntry id="LiteralExpression_1bdfstj"><text>"terminate"</text></outputEntry>
-      </rule>
-
-      <rule id="DecisionRule_1rzk838">
-        <inputEntry id="UnaryTests_0s4exay"><text>"subscriber2"</text></inputEntry>
-        <inputEntry id="UnaryTests_08h4ryo"><text>"add"</text></inputEntry>
-        <outputEntry id="LiteralExpression_0f3yo0c"><text>"activate"</text></outputEntry>
       </rule>
 
       <!-- Default rule: nur wenn oben nichts matcht (weil hitPolicy FIRST) -->

@@ -2,7 +2,7 @@ services:
   postgres:
     image: postgres:15
     container_name: demo-postgres
-    restart: always
+    restart: unless-stopped
     environment:
       POSTGRES_DB: demo
       POSTGRES_USER: demo_user
@@ -11,9 +11,14 @@ services:
       - "5432:5432"
     volumes:
       - ./data:/var/lib/postgresql/data
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
     networks:
       - camunda-net
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
 networks:
   camunda-net:

@@ -3,6 +3,7 @@ services:
     image: postgres:15
     container_name: demo-postgres
     restart: unless-stopped
+    shm_size: "128mb"
     environment:
       POSTGRES_DB: demo
       POSTGRES_USER: demo_user

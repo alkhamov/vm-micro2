@@ -1,20 +1,21 @@
+import os
 import time
+import random
 import requests
 import psycopg2
 
-CAMUNDA_URL = "http://camunda:8080/engine-rest"
-TOPIC = "write-db"
-WORKER_ID = "write-db-worker"
+CAMUNDA_URL = os.getenv("CAMUNDA_URL", "http://camunda:8080/engine-rest")
+TOPIC = os.getenv("TOPIC", "write-db")
+WORKER_ID = os.getenv("WORKER_ID", "write-db-worker")
+POLL_SECONDS = int(os.getenv("POLL_SECONDS", "5"))
 
 DB_CONFIG = {
-    "host": "demo-postgres",
-    "port": 5432,
-    "dbname": "demo",
-    "user": "demo_user",
-    "password": "demo_pass"
+    "host": os.getenv("DB_HOST", "demo-postgres"),
+    "port": int(os.getenv("DB_PORT", "5432")),
+    "dbname": os.getenv("DB_NAME", "demo"),
+    "user": os.getenv("DB_USER", "demo_user"),
+    "password": os.getenv("DB_PASSWORD", "demo_pass"),
 }
-
-# ---------- Camunda REST ----------
 
 def fetch_and_lock():
     url = f"{CAMUNDA_URL}/external-task/fetchAndLock"
@@ -24,7 +25,9 @@ def fetch_and_lock():
         "usePriority": True,
         "topics": [{
             "topicName": TOPIC,
-            "lockDuration": 60000  # 60s lock
+            "lockDuration": 60000,
+            # WICHTIG: Variablen explizit anfordern
+            "variables": ["requestId", "useCase"]
         }]
     }
     r = requests.post(url, json=payload, timeout=15)
@@ -53,41 +56,31 @@ def fail_task(task_id, error_message, error_details, retries=3, retry_timeout=15
         print(f"❌ Failure report failed ({r.status_code}): {r.text}")
     r.raise_for_status()
 
-# ---------- DB ----------
-
 def update_use_case(request_id: int, use_case: str):
     conn = psycopg2.connect(**DB_CONFIG)
-    cur = conn.cursor()
-    cur.execute(
-        """
-        UPDATE requests
-        SET use_case = %s
-        WHERE id = %s
-        """,
-        (use_case, request_id)
-    )
-    conn.commit()
-    cur.close()
-    conn.close()
-
-# ---------- Helpers ----------
+    try:
+        with conn.cursor() as cur:
+            cur.execute(
+                """
+                UPDATE requests
+                SET use_case = %s
+                WHERE id = %s
+                """,
+                (use_case, request_id)
+            )
+        conn.commit()
+    finally:
+        conn.close()
 
 def extract_use_case(variables: dict) -> str | None:
-    """
-    Expected (after BPMN change to resultVariable=useCase + singleEntry):
-      useCase.value == "activate"
-    """
+    # Expected: useCase.value == "activate"
     v = variables.get("useCase")
-    if not v:
+    if not v or "value" not in v:
         return None
-
     value = v.get("value")
     if isinstance(value, str) and value.strip():
-        return value
-
+        return value.strip()
     return None
-
-# ---------- Main ----------
 
 def main():
     print("🚀 write-db worker started")
@@ -97,45 +90,38 @@ def main():
             tasks = fetch_and_lock()
         except Exception as e:
             print(f"❌ fetchAndLock error: {e}")
-            time.sleep(3)
+            time.sleep(min(30, POLL_SECONDS + random.randint(0, 3)))
             continue
 
         if not tasks:
-            time.sleep(2)
+            time.sleep(POLL_SECONDS)
             continue
 
         for task in tasks:
             task_id = task["id"]
             variables = task.get("variables", {})
-
             print(f"📥 Processing task {task_id}")
 
             try:
-                # requestId muss da sein (vom User Task)
-                if "requestId" not in variables:
-                    raise Exception("requestId is missing")
+                req_var = variables.get("requestId")
+                if not req_var or "value" not in req_var:
+                    raise Exception(f"requestId is missing. variables={variables}")
+                request_id = int(req_var["value"])
 
-                request_id = variables["requestId"]["value"]
-
-                # useCase aus DMN Ergebnis holen (robust)
                 use_case = extract_use_case(variables)
                 if not use_case:
                     raise Exception(f"useCase missing/invalid: {variables.get('useCase')}")
 
-                # DB update
-                update_use_case(int(request_id), use_case)
-
-                # Task complete
+                update_use_case(request_id, use_case)
                 complete_task(task_id)
-                print(f"✅ Updated request {request_id} with use_case='{use_case}'")
+                print(f"✅ Updated requestId={request_id} use_case='{use_case}'")
 
             except Exception as e:
-                # Worker soll nicht sterben: Task als failure markieren
                 print(f"❌ Task error: {e}")
                 try:
                     fail_task(task_id, "write-db worker failed", str(e), retries=3, retry_timeout=15000)
                 except Exception as fe:
-                    print(f"❌ Could not report failure to Camunda: {fe}")
+                    print(f"❌ Could not report failure: {fe}")
 
 if __name__ == "__main__":
     main()

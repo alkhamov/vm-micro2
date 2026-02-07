@@ -47,5 +47,5 @@ fi
 if [ "$FOUND" = false ]; then
   echo "⚠️  No BPMN or DMN files found!"
 else
-  echo "🚀 All deployments finished"
+  echo "🚀 All deployments finished!"
 fi

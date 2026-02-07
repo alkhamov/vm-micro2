@@ -6,13 +6,39 @@ services:
       - "8080:8080"
     environment:
       - CAMUNDA_BPM_RUN_EXAMPLE_ENABLED=false
+      # JVM tuning for small VM (1GB RAM)
+      - JAVA_TOOL_OPTIONS=-Xms128m -Xmx384m -XX:MaxMetaspaceSize=128m -XX:+UseG1GC -XX:MaxGCPauseMillis=200
+      # optional: reduce DB load
+      - CAMUNDA_BPM_HISTORY_LEVEL=audit
     networks:
       - camunda-net
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/engine-rest/version"]
-      interval: 5s
-      timeout: 5s
-      retries: 40
+      test: ["CMD-SHELL", "curl -fsS http://localhost:8080/engine-rest/version >/dev/null || exit 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 30
+      start_period: 30s
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  deployer:
+    build: ./deployer
+    container_name: camunda-deployer
+    depends_on:
+      camunda:
+        condition: service_healthy
+    networks:
+      - camunda-net
+    restart: "no"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   read-db-worker:
     build: ./workers/read-db
@@ -22,6 +48,22 @@ services:
         condition: service_healthy
     networks:
       - camunda-net
+    environment:
+      - CAMUNDA_URL=http://camunda:8080/engine-rest
+      - TOPIC=read-db
+      - WORKER_ID=read-db-worker
+      - POLL_SECONDS=5
+      - DB_HOST=demo-postgres
+      - DB_PORT=5432
+      - DB_NAME=demo
+      - DB_USER=demo_user
+      - DB_PASSWORD=demo_pass
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   write-db-worker:
     build: ./workers/write-db
@@ -31,15 +73,22 @@ services:
         condition: service_healthy
     networks:
       - camunda-net
-
-  deployer:
-    build: ./deployer
-    container_name: camunda-deployer
-    depends_on:
-      - camunda
-    networks:
-      - camunda-net
-    restart: "no"
+    environment:
+      - CAMUNDA_URL=http://camunda:8080/engine-rest
+      - TOPIC=write-db
+      - WORKER_ID=write-db-worker
+      - POLL_SECONDS=5
+      - DB_HOST=demo-postgres
+      - DB_PORT=5432
+      - DB_NAME=demo
+      - DB_USER=demo_user
+      - DB_PASSWORD=demo_pass
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
 networks:
   camunda-net:

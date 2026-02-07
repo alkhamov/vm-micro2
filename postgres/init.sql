@@ -1,4 +1,4 @@
-CREATE TABLE requests (
+CREATE TABLE IF NOT EXISTS requests (
   id SERIAL PRIMARY KEY,
   name TEXT NOT NULL,
   action TEXT NOT NULL,
